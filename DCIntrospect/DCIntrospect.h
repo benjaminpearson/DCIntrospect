@@ -38,6 +38,7 @@
 @property (nonatomic) BOOL viewOutlines;
 @property (nonatomic) BOOL highlightNonOpaqueViews;
 @property (nonatomic) BOOL flashOnRedraw;
+@property (nonatomic) BOOL canSelectInvisibleViews;
 @property (nonatomic, retain) DCFrameView *frameView;
 @property (nonatomic, retain) UITextView *inputTextView;
 @property (nonatomic, retain) DCStatusBarOverlay *statusBarOverlay;
@@ -118,6 +119,7 @@
 - (void)toggleRedrawFlashing;
 - (void)callDrawRectOnViewsInSubview:(UIView *)subview;
 - (void)flashRect:(CGRect)rect inView:(UIView *)view;
+- (void)toggleSelectingInvisibleViews;
 
 /////////////////////////////
 // (Somewhat) Experimental //

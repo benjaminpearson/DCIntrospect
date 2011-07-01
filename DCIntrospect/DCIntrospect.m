@@ -30,6 +30,7 @@ DCIntrospect *sharedInstance = nil;
 @synthesize currentView, originalFrame, originalAlpha;
 @synthesize currentViewHistory;
 @synthesize showingHelp;
+@synthesize canSelectInvisibleViews;
 
 #pragma mark Setup
 
@@ -179,6 +180,8 @@ DCIntrospect *sharedInstance = nil;
 			[self.inputTextView resignFirstResponder];
 
 		[self resetInputTextView];
+		
+		self.canSelectInvisibleViews = kDCIntrospectDefaultSelectInvisibleViews;
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDCIntrospectNotificationIntrospectionDidStart
 															object:nil];
@@ -213,8 +216,25 @@ DCIntrospect *sharedInstance = nil;
 
 	// get the topmost view and setup the UI
 	[self.currentViewHistory removeAllObjects];
-	UIView *newView = [views lastObject];
-	[self selectView:newView];
+	
+	UIView *newView = nil;
+	if (self.canSelectInvisibleViews) {
+		newView = [views lastObject];
+	} else {
+		// find the first non hidden/alpha>0 view
+		int count = [views count]-1;
+		while (newView == nil && count >= 0) {
+			UIView *tempView = [views objectAtIndex:count];
+			if (tempView.hidden == FALSE && tempView.alpha > 0) {
+				newView	= tempView;
+			}
+			count--;
+		}
+	}
+	
+	if (newView != nil) {
+		[self selectView:newView];
+	}
 }
 
 - (void)selectView:(UIView *)view
@@ -357,6 +377,12 @@ DCIntrospect *sharedInstance = nil;
 		[self toggleHelp];
 		return NO;
 	}
+	else if ([string isEqualToString:kDCIntrospectKeysToggleSelectingInvisibleViews])
+	{
+		[self toggleSelectingInvisibleViews];
+		return NO;
+	}
+
 
 	if (self.on && self.currentView)
 	{
@@ -796,6 +822,17 @@ DCIntrospect *sharedInstance = nil;
 	}
 }
 
+- (void)toggleSelectingInvisibleViews
+{
+	self.canSelectInvisibleViews = !self.canSelectInvisibleViews;
+	
+	NSString *string = [NSString stringWithFormat:@"Selecting invisible views is %@", (self.highlightNonOpaqueViews) ? @"on" : @"off"];
+	if (self.showStatusBarOverlay)
+		[self showTemporaryStringInStatusBar:string];
+	else
+		NSLog(@"DCIntrospect: %@", string);
+}
+
 #pragma mark Description Methods
 
 - (NSString *)describeProperty:(NSString *)propertyName type:(NSString *)type value:(id)value
@@ -1201,6 +1238,7 @@ DCIntrospect *sharedInstance = nil;
 		[helpString appendFormat:@"<div><span class='name'>Toggle Help</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleHelp];
 		[helpString appendFormat:@"<div><span class='name'>Toggle flash on <span class='code'>drawRect:</span> (see below)</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleFlashViewRedraws];
 		[helpString appendFormat:@"<div><span class='name'>Toggle coordinates</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleShowCoordinates];
+		[helpString appendFormat:@"<div><span class='name'>Toggle selecting invisible views</span><div class='key'>%@</div></div>", kDCIntrospectKeysToggleSelectingInvisibleViews];
 		[helpString appendString:@"<div class='spacer'></div>"];
 
 		[helpString appendString:@"<h2>When a view is selected</h2>"];

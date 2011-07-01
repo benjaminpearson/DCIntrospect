@@ -5,6 +5,7 @@
 #define kDCIntrospectFlashOnRedrawColor [UIColor colorWithRed:1.0 green:0 blue:0 alpha:0.4]			// UIColor
 #define kDCIntrospectFlashOnRedrawFlashLength 0.03													// NSTimeInterval
 #define kDCIntrospectOpaqueColor [UIColor redColor]													// UIColor
+#define kDCIntrospectDefaultSelectInvisibleViews YES
 
 //////////////////
 // Key Bindings //
@@ -21,6 +22,7 @@
 #define kDCIntrospectKeysToggleFlashViewRedraws			@"f"		// toggle flashing on redraw for all views that implement [[DCIntrospect sharedIntrospector] flashRect:inView:] in drawRect:
 #define kDCIntrospectKeysToggleShowCoordinates			@"c"		// toggles the coordinates display
 #define kDCIntrospectKeysEnterBlockMode					@"b"		// enters block action mode
+#define kDCIntrospectKeysToggleSelectingInvisibleViews	@"i"		// toggle touching views that are hidden or alpha <= 0
 
 // When introspector is invoked and a view is selected //
 #define kDCIntrospectKeysNudgeViewLeft					@"4"		// nudges the selected view in given direction
