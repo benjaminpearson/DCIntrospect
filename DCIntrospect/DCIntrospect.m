@@ -225,7 +225,7 @@ DCIntrospect *sharedInstance = nil;
 		int count = [views count]-1;
 		while (newView == nil && count >= 0) {
 			UIView *tempView = [views objectAtIndex:count];
-			if (tempView.hidden == FALSE && tempView.alpha > 0) {
+			if (!(tempView.hidden || tempView.alpha == 0)) {
 				newView	= tempView;
 			}
 			count--;
@@ -826,7 +826,7 @@ DCIntrospect *sharedInstance = nil;
 {
 	self.canSelectInvisibleViews = !self.canSelectInvisibleViews;
 	
-	NSString *string = [NSString stringWithFormat:@"Selecting invisible views is %@", (self.highlightNonOpaqueViews) ? @"on" : @"off"];
+	NSString *string = [NSString stringWithFormat:@"Selecting invisible views is %@", (self.canSelectInvisibleViews) ? @"on" : @"off"];
 	if (self.showStatusBarOverlay)
 		[self showTemporaryStringInStatusBar:string];
 	else
